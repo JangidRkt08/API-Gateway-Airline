@@ -56,7 +56,32 @@ async function signin(data) {
   }
 }
 
+async function isAuthenticated(token) {
+  try {
+    if (!token) {
+      throw new AppError("Token not found", StatusCodes.BAD_REQUEST);
+    }
+
+    const repsonse = Auth.verifyToken(token);
+    const user = await userRepo.get(repsonse.id);
+    if (!user) {
+      throw new AppError("User not found", StatusCodes.NOT_FOUND);
+    }
+    return user.id;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+    if (error.name == "JsonWebTokenError") {
+      throw new AppError("Invalid Token", StatusCodes.BAD_REQUEST);
+    }
+    console.log(error);
+    throw error;
+  }
+}
+
 module.exports = {
   create,
-  signin
+  signin,
+  isAuthenticated
 };
