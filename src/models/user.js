@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
+const {SALT_ROUNDS} = require('../config/server-config')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -33,5 +35,13 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+  // hook -> before saving a new user in Sequelize DB encrypt the password 
+  User.beforeCreate(function encrypt(user){   
+    // console.log("User Object before encryption", user);
+    
+    const encryptedPassword = bcrypt.hashSync(user.password, +SALT_ROUNDS);
+    user.password = encryptedPassword
+    // console.log("User Object after encryption", user);
+  })
   return User;
 };
