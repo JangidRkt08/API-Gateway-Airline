@@ -75,6 +75,9 @@ async function isAuthenticated(token) {
     if (error.name == "JsonWebTokenError") {
       throw new AppError("Invalid Token", StatusCodes.BAD_REQUEST);
     }
+    if (error.name == "TokenExpiredError") {
+      throw new AppError("Token Expired", StatusCodes.BAD_REQUEST);
+    }
     console.log(error);
     throw error;
   }
