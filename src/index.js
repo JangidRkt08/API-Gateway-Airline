@@ -13,6 +13,7 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(limiter);
+app.use("/api", apiRoutes);
 
 app.use(
   "/flightsService",
@@ -34,7 +35,6 @@ app.use(
     },
   })
 );
-app.use("/api", apiRoutes);
 
 app.listen(ServerConfig.PORT, () => {
   console.log("server started at port 5000");
